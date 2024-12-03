@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <title>Status dos Computadores</title>
+</head>
+
+<body>
+    <div class="main-container">
+        <h1>Status dos Computadores</h1>
+
+        <!-- Status dos Computadores -->
+        <div id="computadoresContainer" class="computadores-container">
+            {% for computador in status %}
+            <div class="computador">
+                <img src="{{ url_for('static', filename='image/computer-svgrepo-com.png') }}" alt="Computador" height="100px" width="100px">
+                <h2>Computador {{ computador.id }}</h2>
+                <!-- Componentes -->
+                {% for componente in computador.componentes %}
+                <div class="componente">
+                    <p>Componente: {{ componente.nome }}</p>
+                    <p>Estado: 
+                        <span class="{{ 'funcionando' if componente.estado == 'funcionando' else 'quebrado' }}">
+                            {{ componente.estado }}
+                        </span>
+                    </p>
+                    <p>Tempo de vida: {{ componente.vida }}</p>
+
+                    {% if componente.aviso_manutencao and componente.vida <= 3 %}
+                    <p class="aviso">⚠️ Manutenção preventiva recomendada!</p>
+                    <button onclick="realizarManutencaoPreventiva({{ computador.id }}, {{ loop.index0 }})">
+                        Realizar manutenção preventiva
+                    </button>
+                    {% endif %}
+                </div>
+                {% endfor %}
+                <button onclick="consertarComputador({{ computador.id }})">🔧 Consertar Computador</button>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Histórico Global -->
+        <h2>Histórico Global de Problemas</h2>
+        <div class="historico-container">
+            {% if historico %}
+            <ul>
+                {% for registro in historico %}
+                <li>
+                    Computador {{ registro.computador_id }} - {{ registro.componente }}:
+                    Problema: {{ registro.problema }} |
+                    Custo: R$ {{ registro.custo }} |
+                    Método de Conserto: {{ registro.conserto }}
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p>Sem problemas registrados.</p>
+            {% endif %}
+        </div>
+
+        <button class="adicionar-computador" onclick="adicionarComputador()">➕ Adicionar Computador</button>
+        <button class="analise-computador" onclick="window.location.href='/analise'">📊 Ver Análise de Problemas</button>
+    </div>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+
+</html>

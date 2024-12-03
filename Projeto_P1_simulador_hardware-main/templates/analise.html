@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <title>Análise de Problemas</title>
+</head>
+<body>
+    <div class="main-container">
+        <h1>Análise de Problemas dos Computadores</h1>
+
+        <h2>
+            Custo Total de Consertos: <span class="custo-total">R$ {{ custo_total }}</span>
+        </h2>
+        
+        <h2>Número de Problemas por Componente</h2>
+        <ul class="lista-formatada">
+            {% for componente, quantidade in problemas_por_componente.items() %}
+                <li><strong>{{ componente }}:</strong> {{ quantidade }}</li>
+            {% endfor %}
+        </ul>
+        
+        <h2>Problemas Mais Comuns</h2>
+        <ul class="lista-formatada">
+            {% for problema, quantidade in problemas_comuns.items() %}
+                <li><strong>{{ problema }}:</strong> {{ quantidade }}</li>
+            {% endfor %}
+        </ul>
+        
+
+        <button onclick="window.location.href='/'">Voltar para o Status dos Computadores</button>
+    </div>
+</body>
+</html>

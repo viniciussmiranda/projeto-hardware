@@ -1,0 +1,211 @@
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f7fa;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
+}
+
+.main-container {
+    background-color: #fff;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    width: 90%;
+    max-width: 1200px;
+    padding: 30px;
+    text-align: center;
+    overflow: hidden;
+}
+
+h1 {
+    font-size: 32px;
+    color: #333;
+    text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.1);
+    margin-bottom: 40px;
+}
+
+/* Estilo para a barra de pesquisa */
+#searchInput {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.computadores-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 25px;
+    justify-content: center;
+    margin-bottom: 30px;
+}
+
+.computador {
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+    width: 280px;
+    padding: 25px;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.computador:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.computador img {
+    width: 80px;
+    height: 80px;
+    margin-bottom: 15px;
+}
+
+.computador h2 {
+    font-size: 20px;
+    color: #5b97d7;
+    margin-bottom: 12px;
+    font-weight: 600;
+}
+
+.componente {
+    margin: 10px 0;
+    font-size: 14px;
+    padding-bottom: 10px; /* Espaçamento interno para dar um pouco de espaço abaixo */
+    border-bottom: 1px solid #ddd; /* Borda inferior */
+}
+
+.componente:last-child {
+    border-bottom: none; /* Remove a borda do último componente */
+}
+
+
+.componente span {
+    white-space: nowrap;
+}
+
+.funcionando {
+    color: #28a745; /* Verde */
+    font-weight: bold;
+}
+
+.quebrado {
+    color: #dc3545; /* Vermelho */
+    font-weight: bold;
+}
+
+button {
+    margin-top: 12px;
+    padding: 12px 20px;
+    font-size: 14px;
+    color: #fff;
+    background-color: #5b97d7;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+button:hover {
+    background-color: #4a85c6;
+    transform: translateY(-2px);
+}
+
+button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+.adicionar-computador {
+    margin-top: 30px;
+    padding: 15px 25px;
+    background-color: #28a745;
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+.adicionar-computador:hover {
+    background-color: #218838;
+}
+
+
+.analise-computador {
+    margin-top: 20px; /* Afastar do botão de adicionar computador */
+    padding: 15px 25px;
+    background-color: #5b97d7; /* Cor de fundo igual ao botão de adicionar */
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+    border: none; /* Remove a borda padrão */
+    cursor: pointer; /* Muda o cursor para indicar que é clicável */
+}
+
+.analise-computador:hover {
+    background-color: #4a85c6; /* Cor de fundo ao passar o mouse */
+}
+
+.historico-container {
+    margin-top: 40px;
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.historico-container h2 {
+    font-size: 22px;
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.historico-container ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.historico-container li {
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 10px;
+}
+
+.historico-container li:last-child {
+    margin-bottom: 0;
+}
+
+.historico-container p {
+    font-size: 16px;
+    color: #777;
+    margin-top: 20px;
+}
+
+.custo-total {
+    color: #e63946; 
+    font-weight: bold;
+}
+
+.lista-formatada {
+    list-style: none; 
+    padding: 0; 
+    text-align: left; 
+    margin: 20px auto; 
+}
+
+.lista-formatada li {
+    padding: 10px 0; 
+    border-bottom: 1px solid #ddd; 
+}
+
+.lista-formatada li:last-child {
+    border-bottom: none; 
+}
