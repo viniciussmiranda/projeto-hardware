@@ -1,3 +1,4 @@
+# bibliotecas
 import random
 import threading
 import time
@@ -7,7 +8,7 @@ from flask import Flask, jsonify, render_template
 
 app = Flask(__name__)
 
-# Problemas específicos para cada componente
+# problemas específicos para cada componente
 PROBLEMAS_COMPONENTES = {
     "Placa mãe": [
         ("Circuito queimado", 300, "Substituição do circuito danificado"),
@@ -36,19 +37,20 @@ PROBLEMAS_COMPONENTES = {
     ]
 }
 
-
+# classe que representa um componente individual
 class Componente:
     def __init__(self, nome, vida_maxima, id_componente):
-        self.id = id_componente  # Garantir que cada componente tenha um ID único
-        self.nome = nome
-        self.tempo_vida = vida_maxima
-        self.estado = "funcionando"
-        self.problema = None  # Para armazenar o problema específico quando quebrar
-        self.aviso_manutencao = False
-        self.custo_preventiva = random.randint(50, 100)  # Custo reduzido
-        self.ciclos_ganhos_preventiva = random.randint(15, 25)
+        self.id = id_componente  # atribui uma identificação única ao componente
+        self.nome = nome  # define o nome do componente
+        self.tempo_vida = vida_maxima  # define o tempo de vida máximo do componente
+        self.estado = "funcionando"  # estado inicial do componente
+        self.problema = None  # armazena o problema específico quando o componente quebra
+        self.aviso_manutencao = False  # indica a necessidade de manutenção preventiva
+        self.custo_preventiva = random.randint(50, 100)  # custo para manutenção preventiva
+        self.ciclos_ganhos_preventiva = random.randint(15, 25)  # ciclos ganhos após manutenção preventiva
 
     def degradar(self):
+        # reduz o tempo de vida do componente e verifica se ele quebrou
         if self.estado == "funcionando":
             self.tempo_vida -= 1
             if self.tempo_vida <= 0:
@@ -56,24 +58,25 @@ class Componente:
                 self.problema = random.choice(PROBLEMAS_COMPONENTES[self.nome])
                 self.aviso_manutencao = False
             else:
-                # Verifica necessidade de manutenção preventiva após degradação
+                # verifica necessidade de manutenção preventiva
                 Manutencao.verificar_preventiva(self)
 
     def reparar(self, ambiente, computador_id):
-        problema, custo, conserto = Manutencao.obter_detalhes_problema(
-            self.nome)
+        # realiza o reparo do componente e restaura seu estado
+        problema, custo, conserto = Manutencao.obter_detalhes_problema(self.nome)
         self.tempo_vida = random.randint(5, 15)
         self.estado = "funcionando"
-        self.problema = None  # Remove o problema após o reparo
+        self.problema = None  # remove o problema após o reparo
 
-        # Registrar o problema no histórico
+        # registra o problema no histórico
         Manutencao.registrar_problema(
-            ambiente, computador_id, self.nome, problema, custo, conserto)
+            ambiente, computador_id, self.nome, problema, custo, conserto
+        )
 
 
 class Computador:
     def __init__(self, id):
-        self.id = id
+        self.id = id  # define o identificador único do computador
         self.componentes = [
             Componente("Placa mãe", random.randint(5, 10), 1),
             Componente("Processador", random.randint(5, 10), 2),
@@ -81,94 +84,94 @@ class Computador:
             Componente("Armazenamento", random.randint(5, 10), 4),
             Componente("Fonte de alimentação", random.randint(5, 10), 5)
         ]
-        self.funcionando = True
+        self.funcionando = True  # indica se o computador está funcionando
 
     def verificar_componentes(self):
-        """Verifica todos os componentes e atualiza o estado do computador."""
+        # verifica todos os componentes e atualiza o estado do computador
         for componente in self.componentes:
             componente.degradar()
             if componente.estado == "quebrado":
                 self.funcionando = False
-                return  # Para imediatamente, pois o computador já está quebrado
+                return  # interrompe a verificação ao encontrar um componente quebrado
 
     def consertar(self):
-        """Conserta componentes quebrados e reativa o computador."""
+        # conserta componentes quebrados e reativa o computador
         for componente in self.componentes:
             if componente.estado == "quebrado":
-                # Passa o ambiente e o ID do computador
                 componente.reparar(ambiente, self.id)
         self.funcionando = True
 
-    # teste
-
     def verificar_manutencao_preventiva(self):
-        """Verifica quais componentes precisam de manutenção preventiva."""
+        # verifica quais componentes precisam de manutenção preventiva
         for componente in self.componentes:
             if componente.tempo_vida > 0:
                 Manutencao.verificar_preventiva(componente)
             else:
-                # Quando o tempo de vida chegar a zero, removemos o aviso de manutenção
+                # remove o aviso de manutenção quando o tempo de vida chega a zero
                 componente.aviso_manutencao = False
 
 
 class Manutencao:
-
     @staticmethod
     def realizar_manutencao(computador):
-        """Realiza a manutenção corretiva de um computador."""
+        # realiza a manutenção corretiva de um computador
         computador.consertar()
 
     @staticmethod
     def calcular_custo(conserto):
+        # calcula o custo do conserto de um componente
         _, custo, descricao = conserto
         return custo, descricao
 
     @staticmethod
     def obter_detalhes_problema(nome_componente):
+        # obtém os detalhes do problema de um componente
         problemas = PROBLEMAS_COMPONENTES[nome_componente]
         problema, custo, conserto = random.choice(problemas)
         return problema, custo, conserto
 
     @staticmethod
     def verificar_preventiva(componente):
-        """Ativa o aviso de manutenção preventiva se necessário."""
+        # ativa o aviso de manutenção preventiva se necessário
         if componente.tempo_vida <= 3 and componente.estado == "funcionando":
             componente.aviso_manutencao = True
 
     @staticmethod
     def registrar_problema(ambiente, computador_id, componente, problema, custo, conserto):
-        """Registra um problema no histórico global."""
+        # registra um problema no histórico global
         ambiente.registrar_problema(
-            computador_id, componente, problema, custo, conserto)
+            computador_id, componente, problema, custo, conserto
+        )
 
 
 class Ambiente:
     def __init__(self):
-        self.computadores = []
-        self.historico_problemas = []  # Histórico global de problemas
+        self.computadores = []  # lista de computadores no ambiente
+        self.historico_problemas = []  # histórico global de problemas
 
     def adicionar_computador(self, computador):
+        # adiciona um novo computador ao ambiente
         self.computadores.append(computador)
 
     def verificar_status(self):
+        # verifica o estado dos computadores e seus componentes
         for computador in self.computadores:
-            if computador.funcionando:  # Só verifica componentes de computadores funcionando
+            if computador.funcionando:
                 for componente in computador.componentes:
-                    # Verifica se é necessário avisar sobre manutenção preventiva
                     Manutencao.verificar_preventiva(componente)
-
-                    # Degradação e registro de falha, se necessário
                     estado_anterior = componente.estado
                     componente.degradar()
                     if estado_anterior == "funcionando" and componente.estado == "quebrado":
                         problema, custo, conserto = Manutencao.obter_detalhes_problema(
                             componente.nome)
                         self.registrar_problema(
-                            computador.id, componente.nome, problema, custo, conserto)
-                        computador.funcionando = False  # Para o computador imediatamente
-                        break   # Sai do loop de componentes após detectar a falha
+                            computador.id, componente.nome, problema, custo, conserto
+                        )
+                        computador.funcionando = False
+                        break
 
     def registrar_problema(self, computador_id, componente, problema, custo, conserto):
+        # registra um problema no histórico
         self.historico_problemas.append({
             "computador_id": computador_id,
             "componente": componente,
@@ -178,9 +181,11 @@ class Ambiente:
         })
 
     def mostrar_historico_problemas(self):
+        # retorna o histórico de problemas
         return self.historico_problemas
 
     def mostrar_status(self):
+        # retorna o status atual dos computadores e componentes
         status = []
         for computador in self.computadores:
             comp_status = {
@@ -190,7 +195,7 @@ class Ambiente:
                         "nome": componente.nome,
                         "vida": componente.tempo_vida,
                         "estado": componente.estado,
-                        "aviso_manutencao": hasattr(componente, 'aviso_manutencao') and componente.aviso_manutencao
+                        "aviso_manutencao": componente.aviso_manutencao
                     } for componente in computador.componentes
                 ],
                 "funcionando": computador.funcionando
@@ -199,7 +204,7 @@ class Ambiente:
         return status
 
 
-# Configuração do ambiente
+# configuração do ambiente
 ambiente = Ambiente()
 for i in range(3):
     ambiente.adicionar_computador(Computador(i))
@@ -207,84 +212,29 @@ for i in range(3):
 
 @app.route("/atualizar_tempo_vida", methods=["GET"])
 def atualizar_tempo_vida():
-    ambiente.verificar_status()  # Atualiza o status dos computadores
-    status_atualizado = ambiente.mostrar_status()  # Obtém o status atualizado
-    return jsonify(status=status_atualizado)
+    # atualiza o tempo de vida dos componentes e retorna o status atualizado
+    ambiente.verificar_status()
+    return jsonify(status=ambiente.mostrar_status())
 
 
 @app.route("/atualizar_status", methods=["GET"])
 def atualizar_status():
-    ambiente.verificar_status()  # Atualiza o status dos computadores
-    status_atualizado = ambiente.mostrar_status()  # Obtém o status atualizado
-    return jsonify(status=status_atualizado)
+    # atualiza o status dos computadores
+    ambiente.verificar_status()
+    return jsonify(status=ambiente.mostrar_status())
 
 
 @app.route("/analise")
 def analise():
-    # Obtém o histórico de problemas
-    historico = ambiente.mostrar_historico_problemas()
-
-    # Verifique o conteúdo do histórico
-    # Adicione esta linha para depuração
-    print("Histórico de Problemas:", historico)
-
-    # Cria um DataFrame a partir do histórico
-    df = pd.DataFrame(historico)
-
-    # Verifique a estrutura do DataFrame
-    print("DataFrame:", df.head())  # Adicione esta linha para depuração
-
-    # Realiza as análises
-    problemas_por_componente = df['componente'].value_counts().to_dict()
-    custo_total = df['custo'].sum()
-    problemas_comuns = df['problema'].value_counts().head(10).to_dict()
-
-    # Renderiza o template com os dados de análise
-    return render_template("analise.html",
-                           problemas_por_componente=problemas_por_componente,
-                           custo_total=custo_total,
-                           problemas_comuns=problemas_comuns)
-
-
-@app.route("/manutencao_preventiva/<int:computador_id>/<int:componente_id>", methods=["POST"])
-def manutencao_preventiva(computador_id, componente_id):
-    if 0 <= computador_id < len(ambiente.computadores):
-        computador = ambiente.computadores[computador_id]
-        if 0 <= componente_id < len(computador.componentes):
-            componente = computador.componentes[componente_id]
-            if componente.aviso_manutencao:
-                print(f"[MANUTENÇÃO] Realizando manutenção preventiva no {
-                      componente.nome} do Computador {computador.id}.")
-                # Passa o ambiente e o ID do computador
-                componente.reparar(ambiente, computador.id)
-                return jsonify(success=True)
-            else:
-                return jsonify(success=False, error="Manutenção preventiva não necessária."), 400
-    return jsonify(success=False, error="Computador ou componente não encontrado."), 404
+    # exibe análises dos problemas no ambiente
+    df = pd.DataFrame(ambiente.mostrar_historico_problemas())
+    return render_template("analise.html", analise=df.to_html())
 
 
 @app.route("/")
-def index():
-    status = ambiente.mostrar_status()
-    historico = ambiente.mostrar_historico_problemas()  # Adicionando o histórico
-    return render_template("index.html", status=status, historico=historico)
-
-
-@app.route("/consertar/<int:computador_id>", methods=["POST"])
-def consertar(computador_id):
-    if 0 <= computador_id < len(ambiente.computadores):
-        computador = ambiente.computadores[computador_id]
-        if not computador.funcionando:
-            Manutencao.realizar_manutencao(computador)
-        return jsonify(success=True)
-    return jsonify(success=False, error="Computador não encontrado."), 404
-
-
-@app.route("/adicionar", methods=["POST"])
-def adicionar():
-    novo_id = len(ambiente.computadores)
-    ambiente.adicionar_computador(Computador(novo_id))
-    return jsonify(success=True)
+def home():
+    # página inicial que exibe o status e histórico
+    return render_template("index.html", status=ambiente.mostrar_status(), problemas=ambiente.mostrar_historico_problemas())
 
 
 def simular_ciclos():
@@ -304,7 +254,7 @@ def simular_ciclos():
         time.sleep(10)
 
 
-# Inicia a simulação em uma thread separada
+# inicia a simulação em uma thread separada
 threading.Thread(target=simular_ciclos, daemon=True).start()
 
 if __name__ == "__main__":
